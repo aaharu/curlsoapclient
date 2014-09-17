@@ -13,7 +13,10 @@ class CurlSoapClient extends \SoapClient
 
     public function __getCookies()
     {
-        return $this->_cookies;
+        if (isset($this->_cookies)) {
+            return $this->_cookies;
+        }
+        return null;
     }
 
     public function __setCookie($name, $value = null)
@@ -90,6 +93,7 @@ class CurlSoapClient extends \SoapClient
             $this->_curlCall($new_location, $header, $request);
         }
 
+        // todo
         $is_xml = false;
         $content_type = curl_getinfo($this->curl, CURLINFO_CONTENT_TYPE);
         if ($content_type !== null) {

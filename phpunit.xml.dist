@@ -1,5 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <phpunit colors="true" bootstrap="tests/bootstrap.php">
+    <logging>
+        <log type="coverage-clover" target="coverage.clover"/>
+    </logging>
     <testsuite name="unit-tests">
         <directory>tests/</directory>
     </testsuite>
