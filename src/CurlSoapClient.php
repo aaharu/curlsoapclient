@@ -1,5 +1,5 @@
 <?php
-namespace Aaharu\Soap\CurlSoapClient;
+namespace Aaharu\Soap;
 
 class CurlSoapClient extends \SoapClient
 {
