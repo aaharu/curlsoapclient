@@ -1,4 +1,12 @@
 <?php
+/**
+ * curlsoapclient - SoapClient with php-curl. -
+ *
+ * @author    aaharu
+ * @copyright Copyright (c) 2014 aaharu
+ * @license   MIT License
+ */
+
 namespace Aaharu\Soap;
 
 class CurlSoapClient extends \SoapClient
@@ -65,7 +73,10 @@ class CurlSoapClient extends \SoapClient
 
         $response = $this->_curlCall($location);
         if ($response === false) {
-            throw new \SoapFault('HTTP', 'Error Fetching http, ' . curl_error($this->curl) . ' (' . curl_errno($this->curl) . ')');
+            throw new \SoapFault(
+                'HTTP',
+                'Error Fetching http, ' . curl_error($this->curl) . ' (' . curl_errno($this->curl) . ')'
+            );
         }
 
         $response_header = substr($response, 0, curl_getinfo($this->curl, CURLINFO_HEADER_SIZE));

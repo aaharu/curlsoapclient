@@ -8,30 +8,39 @@ use Aaharu\Soap\CurlSoapClient;
  */
 class CurlSoapClientTest extends \PHPUnit_Framework_TestCase
 {
-    protected $obj = null;
-
-    protected function setUp()
+    /**
+     * @test
+     */
+    public function soap1_1()
     {
-        $this->obj = new CurlSoapClient(null, array(
+        $obj = new CurlSoapClient(null, array(
             'location' => 'http://localhost:8000/tests/server.php',
             'uri' => "http://test-uri/",
             'compression' => SOAP_COMPRESSION_ACCEPT,
-            'trace' => true
+            'connection_timeout' => 1
         ));
-    }
 
-    protected function tearDown()
-    {
-        unset($this->obj);
+        $response = $obj->__soapCall('test', array(123));
+        $this->assertEquals(123, $response);
     }
 
     /**
      * @test
      */
-    public function soapCall()
+    public function soap1_2()
     {
-        $response = $this->obj->__soapCall('test', array(123));
-        $this->assertEquals(123, $response);
-    }
+        $obj = new CurlSoapClient(null, array(
+            'location' => 'http://localhost:8000/tests/server.php',
+            'uri' => "http://test-uri/",
+            'user_agent' => 'curlsoapclient',
+            'soap_version' => SOAP_1_2,
+            'trace' => true
+        ));
 
+        $response = $obj->__soapCall('test', array(123));
+        $this->assertEquals(123, $response);
+
+        $last_request_headers = $obj->__getLastRequestHeaders();
+        $this->assertTrue(stripos($last_request_headers, 'User-Agent: curlsoapclient') !== false);
+    }
 }
