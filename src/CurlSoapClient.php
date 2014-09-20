@@ -55,12 +55,12 @@ class CurlSoapClient extends \SoapClient
      * @param[in] string $action SOAP action
      * @param[in] int $version SOAP version
      * @param[in] int $one_way
-     * @throw \SoapFault
-     * @return string SOAP response
+     * @return mixed (string) SOAP response / (object) SoapFault object
      */
     public function __doRequest($request, $location, $action, $version, $one_way = 0)
     {
         $this->curl = curl_init();
+        // HTTP1.1 and keep-alive
         $header = array('Connection: Keep-Alive');
         curl_setopt($this->curl, CURLOPT_RETURNTRANSFER, true);
         curl_setopt($this->curl, CURLOPT_HEADER, true);
@@ -98,13 +98,28 @@ class CurlSoapClient extends \SoapClient
         curl_setopt($this->curl, CURLOPT_CONNECTTIMEOUT, $connection_timeout);
         curl_setopt($this->curl, CURLOPT_TIMEOUT, $this->curl_timeout);
 
-        $response = $this->_curlCall($location);
+        try {
+            $response = $this->_curlCall($location);
+        } catch (\SoapFault $fault) {
+            curl_close($this->curl);
+            if (isset($this->_exceptions) && empty($this->_exceptions)) {
+                // if exceptions option is false, retrun \SoapFault object
+                return $fault;
+            }
+            throw $fault;
+        }
 
         curl_close($this->curl);
 
         return $response;
     }
 
+    /**
+     * Request cURL.
+     *
+     * @param[in] string $location SOAP address
+     * @throw \SoapFault
+     */
     private function _curlCall($location)
     {
         curl_setopt($this->curl, CURLOPT_URL, $location);
@@ -138,12 +153,9 @@ class CurlSoapClient extends \SoapClient
 
         if ($http_code >= 300 && $http_code < 400) {
             $tmp = stristr($response_header, 'Location:');
-            $line_end = strpos($tmp, "\r");
+            $line_end = strpos($tmp, "\n"); // "\r" will be trimmed
             if ($line_end === false) {
-                $line_end = strpos($tmp, "\n");
-                if ($line_end === false) {
-                    throw new \SoapFault('HTTP', 'Error Redirecting, No Location');
-                }
+                throw new \SoapFault('HTTP', 'Error Redirecting, No Location');
             }
             $new_location = trim(substr($tmp, 9, $line_end - 9));
             $url = parse_url($new_location);
@@ -184,8 +196,9 @@ class CurlSoapClient extends \SoapClient
             }
 
             if ($is_error) {
-                $code_position = strpos($response_header, $http_code);
-                $tmp = substr($response_header, $code_position + strlen((string) $http_code));
+                $string_http_code = (string) $http_code;
+                $code_position = strpos($response_header, $string_http_code);
+                $tmp = substr($response_header, $code_position + strlen($string_http_code));
                 $http_message = trim(strstr($tmp, "\n", true));
                 throw new \SoapFault('HTTP', $http_message);
             }

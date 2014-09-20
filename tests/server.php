@@ -13,11 +13,22 @@ if ($redirect > 0) {
     exit();
 }
 
+if (isset($_GET['503'])) {
+    header ('HTTP/1.1 503 Service Temporarily Unavailable');
+    exit();
+}
+
 function test($x)
 {
     return $x;
 }
 
-$server = new \SoapServer(null, array('uri' => "http://test-uri/"));
-$server->addFunction("test");
+function testFault($x)
+{
+    throw new SoapFault('test', 'message');
+}
+
+$server = new \SoapServer(null, array('uri' => 'http://test-uri/'));
+$server->addFunction('test');
+$server->addFunction('testFault');
 $server->handle();
