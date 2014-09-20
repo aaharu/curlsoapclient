@@ -1,7 +1,7 @@
 <?php
 require_once __DIR__ . '/bootstrap.php';
 
-error_log(var_export(getallheaders(), true));
+function_exists('getallheaders') && error_log(var_export(getallheaders(), true));
 
 $redirect = (int) @$_GET['redirect'];
 if ($redirect > 0) {

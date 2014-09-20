@@ -22,5 +22,6 @@
         <ini name="error_reporting" value="-1"/>
         <ini name="date.timezone" value="Asia/Tokyo"/>
         <ini name="soap.wsdl_cache_enabled" value="0"/>
+        <ini name="always_populate_raw_post_data" value="-1"/>
     </php>
 </phpunit>
