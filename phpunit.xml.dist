@@ -21,5 +21,6 @@
     <php>
         <ini name="error_reporting" value="-1"/>
         <ini name="date.timezone" value="Asia/Tokyo"/>
+        <ini name="soap.wsdl_cache_enabled" value="0"/>
     </php>
 </phpunit>

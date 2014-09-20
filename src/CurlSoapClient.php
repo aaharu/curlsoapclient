@@ -9,14 +9,29 @@
 
 namespace Aaharu\Soap;
 
+/**
+ * @see https://github.com/php/php-src/tree/master/ext/soap
+ */
 class CurlSoapClient extends \SoapClient
 {
-    protected $curl = null;
-    private $redirect_max = 0;
+    protected $curl = null; ///< cURL handle
+    protected $redirect_max;
+    protected $curl_timeout;
+    private $redirect_count = 0;
 
     public function __construct($wsdl, array $options)
     {
         parent::__construct($wsdl, $options);
+        if (isset($options['redirect_max'])) {
+            $this->redirect_max = (int) $options['redirect_max'];
+        } else {
+            $this->redirect_max = 5;
+        }
+        if (isset($options['curl_timeout'])) {
+            $this->curl_timeout = (int) $options['curl_timeout'];
+        } else {
+            $this->curl_timeout = 30;
+        }
     }
 
     public function __getCookies()
@@ -37,6 +52,7 @@ class CurlSoapClient extends \SoapClient
         $this->curl = curl_init();
         $header = array('Connection: Keep-Alive');
         curl_setopt($this->curl, CURLOPT_RETURNTRANSFER, true);
+        curl_setopt($this->curl, CURLOPT_HEADER, true);
         curl_setopt($this->curl, CURLOPT_HTTP_VERSION, CURL_HTTP_VERSION_1_1);
         if (isset($this->trace) && $this->trace) {
             curl_setopt($this->curl, CURLINFO_HEADER_OUT, true);
@@ -69,55 +85,12 @@ class CurlSoapClient extends \SoapClient
             $connection_timeout = $this->_connection_timeout;
         }
         curl_setopt($this->curl, CURLOPT_CONNECTTIMEOUT, $connection_timeout);
-        curl_setopt($this->curl, CURLOPT_TIMEOUT, 30); // todo option
+        curl_setopt($this->curl, CURLOPT_TIMEOUT, $this->curl_timeout);
 
         $response = $this->_curlCall($location);
-        if ($response === false) {
-            throw new \SoapFault(
-                'HTTP',
-                'Error Fetching http, ' . curl_error($this->curl) . ' (' . curl_errno($this->curl) . ')'
-            );
-        }
-
-        $response_header = substr($response, 0, curl_getinfo($this->curl, CURLINFO_HEADER_SIZE));
-        $http_code = curl_getinfo($this->curl, CURLINFO_HTTP_CODE);
-
-        if (isset($this->trace) && $this->trace) {
-            $this->__last_request_headers = curl_getinfo($this->curl, CURLINFO_HEADER_OUT);
-            $this->__last_response_headers = $response_header;
-        }
-
-        if ($http_code >= 300 && $http_code < 400) {
-            $tmp = stristr($response_header, 'Location:');
-            $line_end = strpos($tmp, "\r");
-            if ($line_end === false) {
-                $line_end = strpos($tmp, "\n");
-                if ($line_end === false) {
-                    throw new \SoapFault('HTTP', 'Error Redirecting, No Location');
-                }
-            }
-            // todo filter location
-            $new_location = trim(substr($tmp, 9, $line_end));
-            if (++$this->redirect_max > 5) { // todo option
-                throw new \SoapFault('HTTP', 'Redirection limit reached, aborting');
-            }
-            $this->_curlCall($new_location, $header, $request);
-        }
-
-        // todo
-        $is_xml = false;
-        $content_type = curl_getinfo($this->curl, CURLINFO_CONTENT_TYPE);
-        if ($content_type !== null) {
-            $separator_position = strpos($content_type, ';');
-            if ($separator_position !== false) {
-                $content_type = substr($content_type, 0, $separator_position);
-            }
-            if ($content_type === 'text/xml' || $content_type === 'application/soap+xml') {
-                $is_xml = true;
-            }
-        }
 
         curl_close($this->curl);
+
         return $response;
     }
 
@@ -134,6 +107,79 @@ class CurlSoapClient extends \SoapClient
             curl_setopt($this->curl, CURLOPT_COOKIE, $this->_cookies);
         }
 
-        return curl_exec($this->curl);
+        $response = curl_exec($this->curl);
+        if ($response === false) {
+            throw new \SoapFault(
+                'HTTP',
+                'Error Fetching http, ' . curl_error($this->curl) . ' (' . curl_errno($this->curl) . ')'
+            );
+        }
+
+        $header_size = curl_getinfo($this->curl, CURLINFO_HEADER_SIZE);
+        $response_header = substr($response, 0, $header_size);
+        $response_body = substr($response, $header_size);
+        $http_code = curl_getinfo($this->curl, CURLINFO_HTTP_CODE);
+
+        if (isset($this->trace) && $this->trace) {
+            $this->__last_request_headers = curl_getinfo($this->curl, CURLINFO_HEADER_OUT);
+            $this->__last_response_headers = $response_header;
+        }
+
+        if ($http_code >= 300 && $http_code < 400) {
+            $tmp = stristr($response_header, 'Location:');
+            $line_end = strpos($tmp, "\r");
+            if ($line_end === false) {
+                $line_end = strpos($tmp, "\n");
+                if ($line_end === false) {
+                    throw new \SoapFault('HTTP', 'Error Redirecting, No Location');
+                }
+            }
+            $new_location = trim(substr($tmp, 9, $line_end - 9));
+            $url = parse_url($new_location);
+            if ($url === false ||
+                empty($url['scheme']) ||
+                preg_match('/^https?$/i', $url['scheme']) !== 1) {
+                throw new \SoapFault('HTTP', 'Error Redirecting, Invalid Location');
+            }
+            if (++$this->redirect_count > $this->redirect_max) {
+                throw new \SoapFault('HTTP', 'Redirection limit reached, aborting');
+            }
+            return $this->_curlCall($new_location);
+        }
+
+        if ($http_code >= 400) {
+            $is_error = false;
+            $response_length = strlen($response_body);
+            if ($response_length === 0) {
+                $is_error = true;
+            } elseif ($response_length > 0) {
+                $is_xml = false;
+                $content_type = curl_getinfo($this->curl, CURLINFO_CONTENT_TYPE);
+                if ($content_type !== null) {
+                    $separator_position = strpos($content_type, ';');
+                    if ($separator_position !== false) {
+                        $content_type = substr($content_type, 0, $separator_position);
+                    }
+                    if ($content_type === 'text/xml' || $content_type === 'application/soap+xml') {
+                        $is_xml = true;
+                    }
+                }
+                if (!$is_xml) {
+                    $str = ltrim($response_body);
+                    if (strncmp($str, '<?xml', 5)) {
+                        $is_error = true;
+                    }
+                }
+            }
+
+            if ($is_error) {
+                $code_position = strpos($response_header, $http_code);
+                $tmp = substr($response_header, $code_position + strlen((string) $http_code));
+                $http_message = trim(strstr($tmp, "\n", true));
+                throw new \SoapFault('HTTP', $http_message);
+            }
+        }
+
+        return $response_body;
     }
 }
