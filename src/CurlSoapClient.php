@@ -15,8 +15,8 @@ namespace Aaharu\Soap;
 class CurlSoapClient extends \SoapClient
 {
     protected $curl = null; ///< cURL handle
-    protected $redirect_max;
-    protected $curl_timeout;
+    protected $redirect_max; ///< max redirect counts
+    protected $curl_timeout; ///< cURL request time-out seconds
     private $redirect_count = 0;
 
     public function __construct($wsdl, array $options)
@@ -47,6 +47,17 @@ class CurlSoapClient extends \SoapClient
         $this->_cookies = $name;
     }
 
+    /**
+     * Execute SOAP requests.
+     *
+     * @param[in] string $request SOAP request
+     * @param[in] string $location SOAP address
+     * @param[in] string $action SOAP action
+     * @param[in] int $version SOAP version
+     * @param[in] int $one_way
+     * @throw \SoapFault
+     * @return string SOAP response
+     */
     public function __doRequest($request, $location, $action, $version, $one_way = 0)
     {
         $this->curl = curl_init();
