@@ -1,6 +1,9 @@
 <?php
 require_once __DIR__ . '/bootstrap.php';
 
+ini_set('date.timezone', 'Asia/Tokyo');
+ini_set('soap.wsdl_cache_enabled', 0);
+
 function_exists('getallheaders') && error_log(var_export(getallheaders(), true));
 
 $redirect = (int) @$_GET['redirect'];

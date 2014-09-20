@@ -5,7 +5,7 @@ php:
     - 5.4
 
 before_install:
-    - 'php -S localhost:8000 > /tmp/server.log 2>&1 &'
+    - 'php -dalways_populate_raw_post_data=-1 -ddisplay_errors=stderr -S localhost:8000 > /tmp/server.log 2>&1 &'
 
 install:
     - composer install --no-dev
