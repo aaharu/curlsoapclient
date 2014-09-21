@@ -14,3 +14,6 @@ after_script:
     - cat /tmp/server.log
     - wget https://scrutinizer-ci.com/ocular.phar
     - php ocular.phar code-coverage:upload --format=php-clover report/coverage.clover
+
+notifications:
+    email: false

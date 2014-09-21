@@ -99,7 +99,7 @@ class CurlSoapClient extends \SoapClient
         curl_setopt($this->curl, CURLOPT_TIMEOUT, $this->curl_timeout);
 
         try {
-            $response = $this->_curlCall($location);
+            $response = $this->___curlCall($location);
         } catch (\SoapFault $fault) {
             curl_close($this->curl);
             if (isset($this->_exceptions) && empty($this->_exceptions)) {
@@ -120,7 +120,7 @@ class CurlSoapClient extends \SoapClient
      * @param[in] string $location SOAP address
      * @throw \SoapFault
      */
-    private function _curlCall($location)
+    private function ___curlCall($location)
     {
         curl_setopt($this->curl, CURLOPT_URL, $location);
 
@@ -167,7 +167,7 @@ class CurlSoapClient extends \SoapClient
             if (++$this->redirect_count > $this->redirect_max) {
                 throw new \SoapFault('HTTP', 'Redirection limit reached, aborting');
             }
-            return $this->_curlCall($new_location);
+            return $this->___curlCall($new_location);
         }
 
         if ($http_code >= 400) {
