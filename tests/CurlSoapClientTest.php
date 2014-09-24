@@ -128,7 +128,6 @@ class CurlSoapClientTest extends \PHPUnit_Framework_TestCase
     /**
      * @test
      * @expectedException        \SoapFault
-     * @expectedExceptionMessage Error Fetching http, 
      */
     public function timeout()
     {
