@@ -96,6 +96,10 @@ class CurlSoapClient extends \SoapClient
             throw $fault;
         }
 
+        if ($one_way) {
+            return '';
+        }
+
         return $response;
     }
 
