@@ -125,4 +125,23 @@ class CurlSoapClientTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals($class, $response);
         $this->assertTrue(stripos($obj->__getLastRequestHeaders(), 'POST /tests/server.php HTTP/1.0') === 0);
     }
+
+    /**
+     * @test
+     */
+    public function cookie()
+    {
+        $obj = new CurlSoapClient(null, array(
+            'location' => 'http://localhost:8000/tests/server.php',
+            'uri' => 'http://test-uri/',
+            'trace' => true
+        ));
+        $this->assertEquals(null, $obj->__getCookies());
+        $obj->__setCookie('CookieTest=HelloWorld;');
+        $this->assertEquals('CookieTest=HelloWorld;', $obj->__getCookies());
+        $class = new \stdClass();
+        $response = $obj->test(array(1, 'a', false));
+        $this->assertEquals(array(1, 'a', false), $response);
+        $this->assertTrue(stripos($obj->__getLastRequestHeaders(), 'Cookie: CookieTest=HelloWorld;') !== false);
+    }
 }

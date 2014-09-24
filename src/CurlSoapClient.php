@@ -81,16 +81,10 @@ class CurlSoapClient extends \SoapClient
 
         $this->___configHeader($action, $version);
         $this->___configCompression();
+        $this->___configTimeout();
         if (isset($this->_user_agent) && is_string($this->_user_agent) && strlen($this->_user_agent) > 0) {
             curl_setopt($this->curl, CURLOPT_USERAGENT, $this->_user_agent);
         }
-
-        $connection_timeout = 10; // default
-        if (isset($this->_connection_timeout) && is_int($this->_connection_timeout)) {
-            $connection_timeout = $this->_connection_timeout;
-        }
-        curl_setopt($this->curl, CURLOPT_CONNECTTIMEOUT, $connection_timeout);
-        curl_setopt($this->curl, CURLOPT_TIMEOUT, $this->curl_timeout);
 
         try {
             $response = $this->___curlCall($location);
@@ -135,6 +129,16 @@ class CurlSoapClient extends \SoapClient
         }
     }
 
+    private function ___configTimeout()
+    {
+        $connection_timeout = 10; // default
+        if (isset($this->_connection_timeout) && is_int($this->_connection_timeout)) {
+            $connection_timeout = $this->_connection_timeout;
+        }
+        curl_setopt($this->curl, CURLOPT_CONNECTTIMEOUT, $connection_timeout);
+        curl_setopt($this->curl, CURLOPT_TIMEOUT, $this->curl_timeout);
+    }
+
     /**
      * Request cURL.
      *
@@ -144,11 +148,6 @@ class CurlSoapClient extends \SoapClient
     private function ___curlCall($location)
     {
         curl_setopt($this->curl, CURLOPT_URL, $location);
-
-        // HTTP Authentication
-        if (isset($this->_login) && is_string($this->_login)) {
-            // TODO
-        }
 
         if (isset($this->_cookies) && is_string($this->_cookies)) {
             curl_setopt($this->curl, CURLOPT_COOKIE, $this->_cookies);

@@ -15,7 +15,7 @@ Documentation
 
 ### Aaharu\Soap\CurlSoapClient::CurlSoapClient
 
-```
+```php
 public CurlSoapClient::CurlSoapClient ( mixed $wsdl [, array $options ] )
 ```
 
@@ -42,15 +42,25 @@ public CurlSoapClient::CurlSoapClient ( mixed $wsdl [, array $options ] )
 - stream_context
   - not necessary with curl
 - login
+  - use `CurlSoapClient::___curlSetOpt` instead
 - password
+  - use `CurlSoapClient::___curlSetOpt` instead
 - proxy_host
+  - use `CurlSoapClient::___curlSetOpt` instead
 - proxy_port
+  - use `CurlSoapClient::___curlSetOpt` instead
 - proxy_login
+  - use `CurlSoapClient::___curlSetOpt` instead
 - proxy_password
+  - use `CurlSoapClient::___curlSetOpt` instead
 - local_cert
+  - use `CurlSoapClient::___curlSetOpt` instead
 - passphrase
+  - use `CurlSoapClient::___curlSetOpt` instead
 - authentication
+  - use `CurlSoapClient::___curlSetOpt` instead
 - ssl_method
+  - use `CurlSoapClient::___curlSetOpt` instead
 
 
 Contributing
