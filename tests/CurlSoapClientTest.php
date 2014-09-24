@@ -104,4 +104,20 @@ class CurlSoapClientTest extends \PHPUnit_Framework_TestCase
         ));
         $response = $obj->testFault();
     }
+
+    /**
+     * @test
+     */
+    public function http1_0()
+    {
+        $obj = new CurlSoapClient(null, array(
+            'location' => 'http://localhost:8000/tests/server.php',
+            'uri' => 'http://test-uri/',
+            'compression' => SOAP_COMPRESSION_DEFLATE
+        ));
+        $obj->___curlSetOpt(CURLOPT_HTTP_VERSION, CURL_HTTP_VERSION_1_0);
+        $class = new \stdClass();
+        $response = $obj->test($class);
+        $this->assertEquals($class, $response);
+    }
 }

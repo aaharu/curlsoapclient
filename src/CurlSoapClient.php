@@ -22,16 +22,27 @@ class CurlSoapClient extends \SoapClient
     public function __construct($wsdl, array $options)
     {
         parent::__construct($wsdl, $options);
+        $this->redirect_max = 5;
         if (isset($options['redirect_max'])) {
             $this->redirect_max = (int) $options['redirect_max'];
-        } else {
-            $this->redirect_max = 5;
         }
+        $this->curl_timeout = 30;
         if (isset($options['curl_timeout'])) {
             $this->curl_timeout = (int) $options['curl_timeout'];
-        } else {
-            $this->curl_timeout = 30;
         }
+        $this->curl = curl_init();
+    }
+
+    public function __destruct()
+    {
+        if (isset($this->curl)) {
+            curl_close($this->curl);
+        }
+    }
+
+    public function ___curlSetOpt($option, $value)
+    {
+        curl_setopt($this->curl, $option, $value);
     }
 
     public function __getCookies()
@@ -59,37 +70,18 @@ class CurlSoapClient extends \SoapClient
      */
     public function __doRequest($request, $location, $action, $version, $one_way = 0)
     {
-        $this->curl = curl_init();
-        // HTTP1.1 and keep-alive
-        $header = array('Connection: Keep-Alive');
         curl_setopt($this->curl, CURLOPT_RETURNTRANSFER, true);
         curl_setopt($this->curl, CURLOPT_HEADER, true);
-        curl_setopt($this->curl, CURLOPT_HTTP_VERSION, CURL_HTTP_VERSION_1_1);
+        curl_setopt($this->curl, CURLOPT_POSTFIELDS, $request);
         if (isset($this->trace) && $this->trace) {
             curl_setopt($this->curl, CURLINFO_HEADER_OUT, true);
         }
 
-        if (isset($this->compression)) {
-            if ($this->compression & SOAP_COMPRESSION_ACCEPT) {
-                curl_setopt($this->curl, CURLOPT_ENCODING, '');
-            } elseif ($this->compression & SOAP_COMPRESSION_DEFLATE) {
-                curl_setopt($this->curl, CURLOPT_ENCODING, 'deflate');
-            } else {
-                curl_setopt($this->curl, CURLOPT_ENCODING, 'gzip');
-            }
-        }
+        $this->___configHeader($action, $version);
+        $this->___configCompression();
         if (isset($this->_user_agent) && is_string($this->_user_agent) && strlen($this->_user_agent) > 0) {
             curl_setopt($this->curl, CURLOPT_USERAGENT, $this->_user_agent);
         }
-        if ($version === SOAP_1_2) {
-            $header[] = "Content-Type: application/soap+xml; charset=utf-8; action=\"{$action}\"";
-        } else {
-            $header[] = 'Content-Type: text/xml; charset=utf-8';
-            $header[] = "SOAPAction: \"{$action}\"";
-        }
-
-        curl_setopt($this->curl, CURLOPT_HTTPHEADER, $header);
-        curl_setopt($this->curl, CURLOPT_POSTFIELDS, $request);
 
         $connection_timeout = 10; // default
         if (isset($this->_connection_timeout) && is_int($this->_connection_timeout)) {
@@ -101,7 +93,6 @@ class CurlSoapClient extends \SoapClient
         try {
             $response = $this->___curlCall($location);
         } catch (\SoapFault $fault) {
-            curl_close($this->curl);
             if (isset($this->_exceptions) && empty($this->_exceptions)) {
                 // if exceptions option is false, retrun \SoapFault object
                 return $fault;
@@ -109,9 +100,34 @@ class CurlSoapClient extends \SoapClient
             throw $fault;
         }
 
-        curl_close($this->curl);
-
         return $response;
+    }
+
+    private function ___configHeader($action, $version)
+    {
+        // HTTP1.1 and keep-alive
+        curl_setopt($this->curl, CURLOPT_HTTP_VERSION, CURL_HTTP_VERSION_1_1);
+        $header = array('Connection: Keep-Alive');
+        if ($version === SOAP_1_2) {
+            $header[] = "Content-Type: application/soap+xml; charset=utf-8; action=\"{$action}\"";
+        } else {
+            $header[] = 'Content-Type: text/xml; charset=utf-8';
+            $header[] = "SOAPAction: \"{$action}\"";
+        }
+        curl_setopt($this->curl, CURLOPT_HTTPHEADER, $header);
+    }
+
+    private function ___configCompression()
+    {
+        if (isset($this->compression)) {
+            if ($this->compression & SOAP_COMPRESSION_ACCEPT) {
+                curl_setopt($this->curl, CURLOPT_ENCODING, '');
+            } elseif ($this->compression & SOAP_COMPRESSION_DEFLATE) {
+                curl_setopt($this->curl, CURLOPT_ENCODING, 'deflate');
+            } else {
+                curl_setopt($this->curl, CURLOPT_ENCODING, 'gzip');
+            }
+        }
     }
 
     /**
