@@ -18,6 +18,7 @@ class CurlSoapClient extends \SoapClient
     protected $redirect_max; ///< max redirect counts
     protected $curl_timeout; ///< cURL request time-out seconds
     private $redirect_count = 0;
+    private $curlopts = array();
 
     public function __construct($wsdl, array $options)
     {
@@ -43,6 +44,7 @@ class CurlSoapClient extends \SoapClient
     public function ___curlSetOpt($option, $value)
     {
         curl_setopt($this->curl, $option, $value);
+        $this->curlopts[$option] = $value;
     }
 
     public function __getCookies()
@@ -105,9 +107,12 @@ class CurlSoapClient extends \SoapClient
 
     private function ___configHeader($action, $version)
     {
-        // HTTP1.1 and keep-alive
-        curl_setopt($this->curl, CURLOPT_HTTP_VERSION, CURL_HTTP_VERSION_1_1);
-        $header = array('Connection: Keep-Alive');
+        $header = array();
+        if (isset($this->_keep_alive) && empty($this->_keep_alive)) {
+            $header[] = 'Connection: close';
+        } else {
+            $header[] = 'Connection: Keep-Alive';
+        }
         if ($version === SOAP_1_2) {
             $header[] = "Content-Type: application/soap+xml; charset=utf-8; action=\"{$action}\"";
         } else {

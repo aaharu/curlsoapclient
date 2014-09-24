@@ -35,6 +35,7 @@ class CurlSoapClientTest extends \PHPUnit_Framework_TestCase
             'user_agent' => 'curlsoapclient',
             'soap_version' => SOAP_1_2,
             'compression' => SOAP_COMPRESSION_GZIP,
+            'keep_alive' => false,
             'trace' => true
         ));
 
@@ -43,6 +44,7 @@ class CurlSoapClientTest extends \PHPUnit_Framework_TestCase
 
         $last_request_headers = $obj->__getLastRequestHeaders();
         $this->assertTrue(stripos($last_request_headers, 'User-Agent: curlsoapclient') !== false);
+        $this->assertTrue(stripos($last_request_headers, 'Connection: close') !== false);
     }
 
     /**
@@ -113,11 +115,14 @@ class CurlSoapClientTest extends \PHPUnit_Framework_TestCase
         $obj = new CurlSoapClient(null, array(
             'location' => 'http://localhost:8000/tests/server.php',
             'uri' => 'http://test-uri/',
-            'compression' => SOAP_COMPRESSION_DEFLATE
+            'compression' => SOAP_COMPRESSION_DEFLATE,
+            'curl_timeout' => 1,
+            'trace' => true
         ));
         $obj->___curlSetOpt(CURLOPT_HTTP_VERSION, CURL_HTTP_VERSION_1_0);
         $class = new \stdClass();
         $response = $obj->test($class);
         $this->assertEquals($class, $response);
+        $this->assertTrue(stripos($obj->__getLastRequestHeaders(), 'POST /tests/server.php HTTP/1.0') === 0);
     }
 }

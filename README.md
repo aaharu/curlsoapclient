@@ -28,6 +28,7 @@ public CurlSoapClient::CurlSoapClient ( mixed $wsdl [, array $options ] )
 - exceptions
 - connection_timeout
 - user_agent
+- keep_alive
 
 #### additional options
 
@@ -50,8 +51,6 @@ public CurlSoapClient::CurlSoapClient ( mixed $wsdl [, array $options ] )
 - passphrase
 - authentication
 - ssl_method
-- keep_alive
-  - always keep-alive, now
 
 
 Contributing
