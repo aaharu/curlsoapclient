@@ -116,7 +116,6 @@ class CurlSoapClientTest extends \PHPUnit_Framework_TestCase
             'location' => 'http://localhost:8000/tests/server.php',
             'uri' => 'http://test-uri/',
             'compression' => SOAP_COMPRESSION_DEFLATE,
-            'curl_timeout' => 1,
             'trace' => true
         ));
         $obj->___curlSetOpt(CURLOPT_HTTP_VERSION, CURL_HTTP_VERSION_1_0);
@@ -124,6 +123,22 @@ class CurlSoapClientTest extends \PHPUnit_Framework_TestCase
         $response = $obj->test($class);
         $this->assertEquals($class, $response);
         $this->assertTrue(stripos($obj->__getLastRequestHeaders(), 'POST /tests/server.php HTTP/1.0') === 0);
+    }
+
+    /**
+     * @test
+     * @expectedException        \SoapFault
+     * @expectedExceptionMessage Error Fetching http, 
+     */
+    public function timeout()
+    {
+        $obj = new CurlSoapClient(null, array(
+            'location' => 'http://localhost:8000/tests/server.php?usleep=1300000',
+            'uri' => 'http://test-uri/',
+            'curl_timeout' => 1
+        ));
+        $class = new \stdClass();
+        $response = $obj->test($class);
     }
 
     /**

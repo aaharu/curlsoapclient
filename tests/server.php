@@ -18,6 +18,11 @@ if (isset($_GET['503'])) {
     exit();
 }
 
+$usleep = (int) @$_GET['usleep'];
+if ($usleep > 0) {
+    usleep($usleep);
+}
+
 function test($x)
 {
     return $x;
