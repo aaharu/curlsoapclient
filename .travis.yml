@@ -1,16 +1,19 @@
 language: php
 php:
-    - hhvm
     - 5.6
     - 5.5
     - 5.4
+    - 5.3
 
 before_install:
-    - '[[ "$TRAVIS_PHP_VERSION" == "hhvm" ]] || php -dalways_populate_raw_post_data=-1 -ddisplay_errors=stderr -S localhost:8000 > /tmp/server.log 2>&1 &'
-    - '[[ "$TRAVIS_PHP_VERSION" == "hhvm" ]] && hhvm -vServer.Type=fastcgi -vServer.Port=8000 > /tmp/server.log 2>&1 &'
+    - 'find src -type f -name *.php | xargs php -l'
+    - '[[ "$TRAVIS_PHP_VERSION" == "5.3" ]] || php -dalways_populate_raw_post_data=-1 -ddisplay_errors=stderr -S localhost:8000 > /tmp/server.log 2>&1 &'
 
 install:
     - composer install --no-dev
+
+script:
+    - '[[ "$TRAVIS_PHP_VERSION" == "5.3" ]] || phpunit'
 
 after_script:
     - cat /tmp/server.log
