@@ -144,6 +144,35 @@ class CurlSoapClientTest extends \PHPUnit_Framework_TestCase
 
     /**
      * @test
+     * @expectedException        \SoapFault
+     * @expectedExceptionMessage Error Redirecting, No Location
+     */
+    public function noLocation()
+    {
+        $obj = new CurlSoapClient(null, array(
+            'location' => 'http://localhost:8000/tests/server.php?300=1',
+            'uri' => 'http://test-uri/'
+        ));
+        $class = new \stdClass();
+        $response = $obj->test($class);
+    }
+
+    /**
+     * @test
+     * @expectedException        \SoapFault
+     * @expectedExceptionMessage Error Redirecting, Invalid Location
+     */
+    public function invalidLocation()
+    {
+        $obj = new CurlSoapClient(null, array(
+            'location' => 'http://localhost:8000/tests/server.php?location=/tmp',
+            'uri' => 'http://test-uri/'
+        ));
+        $response = $obj->test(true);
+    }
+
+    /**
+     * @test
      */
     public function cookie()
     {
@@ -158,5 +187,19 @@ class CurlSoapClientTest extends \PHPUnit_Framework_TestCase
         $response = $obj->test(array(1, 'a', false));
         $this->assertEquals(array(1, 'a', false), $response);
         $this->assertTrue(stripos($obj->__getLastRequestHeaders(), 'Cookie: CookieTest=HelloWorld;') !== false);
+    }
+
+    /**
+     * @test
+     * @expectedException        \SoapFault
+     * @expectedExceptionMessage Bad Request
+     */
+    public function server400()
+    {
+        $obj = new CurlSoapClient(null, array(
+            'location' => 'http://localhost:8000/tests/server.php?400=1',
+            'uri' => 'http://test-uri/'
+        ));
+        $response = $obj->test(true);
     }
 }

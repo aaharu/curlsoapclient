@@ -14,7 +14,25 @@ if ($redirect > 0) {
 }
 
 if (isset($_GET['503'])) {
-    header ('HTTP/1.1 503 Service Temporarily Unavailable');
+    header('HTTP/1.1 503 Service Temporarily Unavailable');
+    exit();
+}
+
+if (isset($_GET['400'])) {
+    header('HTTP/1.1 400 Bad Request');
+    header('Content-Type: text/plain');
+    echo 'bodybody';
+    exit();
+}
+
+if (isset($_GET['300'])) {
+    header('HTTP/1.1 300');
+    exit();
+}
+
+$location = @$_GET['location'];
+if ($location) {
+    header("Location: $location");
     exit();
 }
 
@@ -28,7 +46,7 @@ function test($x)
     return $x;
 }
 
-function testFault($x)
+function testFault()
 {
     throw new SoapFault('test', 'message');
 }

@@ -7,7 +7,7 @@ php:
 
 before_install:
     - '[[ "$TRAVIS_PHP_VERSION" == "hhvm" ]] || php -dalways_populate_raw_post_data=-1 -ddisplay_errors=stderr -S localhost:8000 > /tmp/server.log 2>&1 &'
-    - '[[ "$TRAVIS_PHP_VERSION" == "hhvm" ]] && hhvm -vServer.Type=fastcgi -vServer.Port=9000 > /tmp/server.log 2>&1 &'
+    - '[[ "$TRAVIS_PHP_VERSION" == "hhvm" ]] && hhvm -vServer.Type=fastcgi -vServer.Port=8000 > /tmp/server.log 2>&1 &'
 
 install:
     - composer install --no-dev
