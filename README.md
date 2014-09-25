@@ -29,13 +29,16 @@ public CurlSoapClient::CurlSoapClient ( mixed $wsdl [, array $options ] )
 - connection_timeout
 - user_agent
 - keep_alive
+  - `true` as a default
 
 #### additional options
 
 - redirect_max
   - The maximum amount of HTTP redirections to follow. default is 5.
+  - `5` as a default
 - curl_timeout
   - CURLOPT_TIMEOUT
+  - `30` as a default
 
 #### unsupported options
 
