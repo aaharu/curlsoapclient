@@ -76,7 +76,7 @@ class CurlSoapClientTest extends \PHPUnit_Framework_TestCase
             'location' => 'http://noexists',
             'uri' => 'http://test-uri/'
         ));
-        $response = $obj->test('hoge');
+        $obj->test('hoge');
     }
 
     /**
@@ -90,7 +90,7 @@ class CurlSoapClientTest extends \PHPUnit_Framework_TestCase
             'location' => 'http://localhost:8000/tests/server.php?503=1',
             'uri' => 'http://test-uri/'
         ));
-        $response = $obj->test('hoge');
+        $obj->test('hoge');
     }
 
     /**
@@ -104,7 +104,7 @@ class CurlSoapClientTest extends \PHPUnit_Framework_TestCase
             'location' => 'http://localhost:8000/tests/server.php',
             'uri' => 'http://test-uri/'
         ));
-        $response = $obj->testFault();
+        $obj->testFault();
     }
 
     /**
@@ -139,7 +139,7 @@ class CurlSoapClientTest extends \PHPUnit_Framework_TestCase
             'curl_timeout' => 1
         ));
         $class = new \stdClass();
-        $response = $obj->test($class);
+        $obj->test($class);
     }
 
     /**
@@ -154,7 +154,7 @@ class CurlSoapClientTest extends \PHPUnit_Framework_TestCase
             'uri' => 'http://test-uri/'
         ));
         $class = new \stdClass();
-        $response = $obj->test($class);
+        $obj->test($class);
     }
 
     /**
@@ -168,7 +168,7 @@ class CurlSoapClientTest extends \PHPUnit_Framework_TestCase
             'location' => 'http://localhost:8000/tests/server.php?location=/tmp',
             'uri' => 'http://test-uri/'
         ));
-        $response = $obj->test(true);
+        $obj->test(true);
     }
 
     /**
@@ -200,6 +200,6 @@ class CurlSoapClientTest extends \PHPUnit_Framework_TestCase
             'location' => 'http://localhost:8000/tests/server.php?400=1',
             'uri' => 'http://test-uri/'
         ));
-        $response = $obj->test(true);
+        $obj->test(true);
     }
 }

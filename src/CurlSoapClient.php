@@ -1,6 +1,6 @@
 <?php
 /**
- * curlsoapclient - SoapClient with php-curl. -
+ * curlsoapclient - SoapClient with ext-curl. -
  *
  * @author    aaharu
  * @copyright Copyright (c) 2014 aaharu
@@ -18,18 +18,17 @@ class CurlSoapClient extends \SoapClient
     protected $redirect_max; ///< max redirect counts
     protected $curl_timeout; ///< cURL request time-out seconds
     private $redirect_count = 0;
-    private $curlopts = array();
 
     public function __construct($wsdl, array $options)
     {
         parent::__construct($wsdl, $options);
         $this->redirect_max = 5;
         if (isset($options['redirect_max'])) {
-            $this->redirect_max = (int) $options['redirect_max'];
+            $this->redirect_max = (int)$options['redirect_max'];
         }
         $this->curl_timeout = 30;
         if (isset($options['curl_timeout'])) {
-            $this->curl_timeout = (int) $options['curl_timeout'];
+            $this->curl_timeout = (int)$options['curl_timeout'];
         }
         $this->curl = curl_init();
     }
@@ -44,7 +43,6 @@ class CurlSoapClient extends \SoapClient
     public function ___curlSetOpt($option, $value)
     {
         curl_setopt($this->curl, $option, $value);
-        $this->curlopts[$option] = $value;
     }
 
     public function __getCookies()
@@ -63,11 +61,13 @@ class CurlSoapClient extends \SoapClient
     /**
      * Execute SOAP requests.
      *
-     * @param[in] string $request SOAP request
-     * @param[in] string $location SOAP address
-     * @param[in] string $action SOAP action
-     * @param[in] int $version SOAP version
-     * @param[in] int $one_way
+     * @param string $request SOAP request
+     * @param string $location SOAP address
+     * @param string $action SOAP action
+     * @param int $version SOAP version
+     * @param int $one_way
+     * @throws \Exception
+     * @throws \SoapFault
      * @return mixed (string) SOAP response / (object) SoapFault object
      */
     public function __doRequest($request, $location, $action, $version, $one_way = 0)
@@ -90,7 +90,7 @@ class CurlSoapClient extends \SoapClient
             $response = $this->___curlCall($location);
         } catch (\SoapFault $fault) {
             if (isset($this->_exceptions) && empty($this->_exceptions)) {
-                // if exceptions option is false, retrun \SoapFault object
+                // if exceptions option is false, return \SoapFault object
                 return $fault;
             }
             throw $fault;
@@ -147,7 +147,8 @@ class CurlSoapClient extends \SoapClient
      * Request cURL.
      *
      * @param[in] string $location SOAP address
-     * @throw \SoapFault
+     * @throws \SoapFault
+     * @return mixed response body
      */
     private function ___curlCall($location)
     {
@@ -185,7 +186,8 @@ class CurlSoapClient extends \SoapClient
             $url = parse_url($new_location);
             if ($url === false ||
                 empty($url['scheme']) ||
-                preg_match('/^https?$/i', $url['scheme']) !== 1) {
+                preg_match('/^https?$/i', $url['scheme']) !== 1
+            ) {
                 throw new \SoapFault('HTTP', 'Error Redirecting, Invalid Location');
             }
             if (++$this->redirect_count > $this->redirect_max) {
@@ -220,7 +222,7 @@ class CurlSoapClient extends \SoapClient
             }
 
             if ($is_error) {
-                $string_http_code = (string) $http_code;
+                $string_http_code = (string)$http_code;
                 $code_position = strpos($response_header, $string_http_code);
                 $tmp = substr($response_header, $code_position + strlen($string_http_code));
                 $http_message = trim(strstr($tmp, "\n", true));

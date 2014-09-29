@@ -5,7 +5,7 @@ curlsoapclient
 [![Scrutinizer Code Quality](https://scrutinizer-ci.com/g/aaharu/curlsoapclient/badges/quality-score.png?b=master)](https://scrutinizer-ci.com/g/aaharu/curlsoapclient/?branch=master)
 [![Code Coverage](https://scrutinizer-ci.com/g/aaharu/curlsoapclient/badges/coverage.png?b=master)](https://scrutinizer-ci.com/g/aaharu/curlsoapclient/?branch=master)
 
-SoapClient with php-curl.
+SoapClient with ext-curl.
 
 https://packagist.org/packages/aaharu/curlsoapclient
 
