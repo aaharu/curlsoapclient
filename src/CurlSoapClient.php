@@ -9,10 +9,12 @@
 
 namespace Aaharu\Soap;
 
+use SoapClient;
+
 /**
  * @see https://github.com/php/php-src/tree/master/ext/soap
  */
-class CurlSoapClient extends \SoapClient
+class CurlSoapClient extends SoapClient
 {
     protected $curl = null; ///< cURL handle
     protected $redirect_max; ///< max redirect counts
@@ -31,6 +33,7 @@ class CurlSoapClient extends \SoapClient
             $this->curl_timeout = (int)$options['curl_timeout'];
         }
         $this->curl = curl_init();
+        $this->_cookies = array();
     }
 
     public function __destruct()
@@ -47,15 +50,16 @@ class CurlSoapClient extends \SoapClient
 
     public function __getCookies()
     {
-        if (isset($this->_cookies)) {
-            return $this->_cookies;
-        }
-        return null;
+        return $this->_cookies;
     }
 
     public function __setCookie($name, $value = null)
     {
-        $this->_cookies = $name;
+        if (!isset($value)) {
+            unset($this->_cookies[$name]);
+            return;
+        }
+        $this->_cookies[$name] = (array)$value;
     }
 
     /**
@@ -154,8 +158,12 @@ class CurlSoapClient extends \SoapClient
     {
         curl_setopt($this->curl, CURLOPT_URL, $location);
 
-        if (isset($this->_cookies) && is_string($this->_cookies)) {
-            curl_setopt($this->curl, CURLOPT_COOKIE, $this->_cookies);
+        if (!empty($this->_cookies)) {
+            $cookies = array();
+            foreach ($this->_cookies as $cookie_name => $cookie_value) {
+                $cookies[] = $cookie_name . '=' . $cookie_value[0];
+            }
+            curl_setopt($this->curl, CURLOPT_COOKIE, implode('; ', $cookies));
         }
 
         $response = curl_exec($this->curl);

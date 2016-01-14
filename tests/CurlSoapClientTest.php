@@ -181,12 +181,24 @@ class CurlSoapClientTest extends \PHPUnit_Framework_TestCase
             'uri' => 'http://test-uri/',
             'trace' => true
         ));
-        $this->assertEquals(null, $obj->__getCookies());
-        $obj->__setCookie('CookieTest=HelloWorld;');
-        $this->assertEquals('CookieTest=HelloWorld;', $obj->__getCookies());
-        $response = $obj->test(array(1, 'a', false));
-        $this->assertEquals(array(1, 'a', false), $response);
-        $this->assertTrue(stripos($obj->__getLastRequestHeaders(), 'Cookie: CookieTest=HelloWorld;') !== false);
+        $original_obj = new \SoapClient(null, array(
+            'location' => 'http://localhost:8000/tests/server.php',
+            'uri' => 'http://test-uri/',
+            'trace' => true
+        ));
+        $this->assertEquals(array(), $obj->__getCookies());
+        $this->assertEquals(array(), $original_obj->__getCookies());
+        $obj->__setCookie('CookieTest', 'HelloWorld');
+        $obj->__setCookie('CookieTest2', 'HelloWorld2');
+        $original_obj->__setCookie('CookieTest', 'HelloWorld');
+        $original_obj->__setCookie('CookieTest2', 'HelloWorld2');
+        $this->assertEquals(array('CookieTest' => array('HelloWorld'), 'CookieTest2' => array('HelloWorld2')), $obj->__getCookies());
+        $this->assertEquals(array('CookieTest' => array('HelloWorld'), 'CookieTest2' => array('HelloWorld2')), $original_obj->__getCookies());
+        $this->assertEquals(array(1, 'a', false), $obj->test(array(1, 'a', false)));
+        $this->assertEquals(array(1, 'a', false), $original_obj->test(array(1, 'a', false)));
+        // difference of CurlSoapClient from SoapClient [";" -> "; "]
+        $this->assertTrue(stripos($obj->__getLastRequestHeaders(), 'Cookie: CookieTest=HelloWorld; CookieTest2=HelloWorld2') !== false);
+        $this->assertTrue(stripos($original_obj->__getLastRequestHeaders(), 'Cookie: CookieTest=HelloWorld;CookieTest2=HelloWorld2') !== false);
     }
 
     /**
