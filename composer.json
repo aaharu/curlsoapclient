@@ -1,7 +1,7 @@
 {
     "name": "aaharu/curlsoapclient",
     "type": "library",
-    "description": "SoapClient with php-curl",
+    "description": "SoapClient with ext-curl",
     "keywords": ["soap", "curl", "client", "web service"],
     "license": "MIT",
     "authors": [
@@ -22,8 +22,8 @@
         }
     },
     "require-dev": {
-        "squizlabs/php_codesniffer": "2.3.2",
-        "phpunit/phpunit": "4.7.*@dev"
+        "squizlabs/php_codesniffer": "2.*",
+        "phpunit/phpunit": "5.1.*"
     },
     "scripts": {
         "test": "phpunit",
