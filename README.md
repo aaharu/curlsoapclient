@@ -30,6 +30,8 @@ public CurlSoapClient::CurlSoapClient ( mixed $wsdl [, array $options ] )
 - user_agent
 - keep_alive
   - `true` as a default
+- proxy_host
+- proxy_port
 
 #### additional options
 
@@ -47,10 +49,6 @@ public CurlSoapClient::CurlSoapClient ( mixed $wsdl [, array $options ] )
 - login
   - use `CurlSoapClient::___curlSetOpt` instead
 - password
-  - use `CurlSoapClient::___curlSetOpt` instead
-- proxy_host
-  - use `CurlSoapClient::___curlSetOpt` instead
-- proxy_port
   - use `CurlSoapClient::___curlSetOpt` instead
 - proxy_login
   - use `CurlSoapClient::___curlSetOpt` instead
@@ -78,7 +76,7 @@ $ composer install
 ### Running the tests
 
 ```sh
-$ vendor/bin/phpunit
+$ composer test
 ```
 
 

@@ -89,6 +89,12 @@ class CurlSoapClient extends SoapClient
         if (isset($this->_user_agent) && is_string($this->_user_agent) && strlen($this->_user_agent) > 0) {
             curl_setopt($this->curl, CURLOPT_USERAGENT, $this->_user_agent);
         }
+        if (isset($this->_proxy_host) && is_string($this->_proxy_host) && strlen($this->_proxy_host) > 0) {
+            curl_setopt($this->curl, CURLOPT_PROXY, $this->_proxy_host);
+        }
+        if (isset($this->_proxy_port) && is_integer($this->_proxy_port)) {
+            curl_setopt($this->curl, CURLOPT_PROXYPORT, $this->_proxy_port);
+        }
 
         try {
             $response = $this->___curlCall($location);
