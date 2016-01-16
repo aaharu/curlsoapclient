@@ -89,30 +89,8 @@ class CurlSoapClient extends SoapClient
         if (isset($this->_user_agent) && is_string($this->_user_agent) && strlen($this->_user_agent) > 0) {
             curl_setopt($this->curl, CURLOPT_USERAGENT, $this->_user_agent);
         }
-        if (isset($this->_login) && is_string($this->_login) && strlen($this->_login) > 0 &&
-            isset($this->_password) && is_string($this->_password) && strlen($this->_password) > 0) {
-            curl_setopt($this->curl, CURLOPT_USERPWD, $this->_login . ':' . $this->_password);
-            if (property_exists($this, '_digest')) {
-                curl_setopt($this->curl, CURLOPT_HTTPAUTH, CURLAUTH_ANYSAFE);
-            } else {
-                curl_setopt($this->curl, CURLOPT_HTTPAUTH, CURLAUTH_ANY);
-            }
-        }
-        if (isset($this->_proxy_host) && is_string($this->_proxy_host) && strlen($this->_proxy_host) > 0) {
-            curl_setopt($this->curl, CURLOPT_PROXY, $this->_proxy_host);
-        }
-        if (isset($this->_proxy_port) && is_integer($this->_proxy_port)) {
-            curl_setopt($this->curl, CURLOPT_PROXYPORT, $this->_proxy_port);
-        }
-        if (isset($this->_proxy_login) && is_string($this->_proxy_login) && strlen($this->_proxy_login) > 0 &&
-            isset($this->_proxy_password) && is_string($this->_proxy_password) && strlen($this->_proxy_password) > 0) {
-            curl_setopt($this->curl, CURLOPT_PROXYUSERPWD, $this->_proxy_login . ':' . $this->_proxy_password);
-            if (property_exists($this, '_digest')) {
-                curl_setopt($this->curl, CURLOPT_PROXYAUTH, CURLAUTH_ANYSAFE);
-            } else {
-                curl_setopt($this->curl, CURLOPT_PROXYAUTH, CURLAUTH_ANY);
-            }
-        }
+        $this->___configHttpAuthentication();
+        $this->___configProxy();
 
         try {
             $response = $this->___curlCall($location);
@@ -169,6 +147,38 @@ class CurlSoapClient extends SoapClient
         }
         curl_setopt($this->curl, CURLOPT_CONNECTTIMEOUT, $connection_timeout);
         curl_setopt($this->curl, CURLOPT_TIMEOUT, $this->curl_timeout);
+    }
+
+    private function ___configHttpAuthentication()
+    {
+        if (isset($this->_login) && is_string($this->_login) && strlen($this->_login) > 0 &&
+            isset($this->_password) && is_string($this->_password) && strlen($this->_password) > 0) {
+            curl_setopt($this->curl, CURLOPT_USERPWD, $this->_login . ':' . $this->_password);
+            if (property_exists($this, '_digest')) {
+                curl_setopt($this->curl, CURLOPT_HTTPAUTH, CURLAUTH_ANYSAFE);
+            } else {
+                curl_setopt($this->curl, CURLOPT_HTTPAUTH, CURLAUTH_ANY);
+            }
+        }
+    }
+
+    private function ___configProxy()
+    {
+        if (isset($this->_proxy_host) && is_string($this->_proxy_host) && strlen($this->_proxy_host) > 0) {
+            curl_setopt($this->curl, CURLOPT_PROXY, $this->_proxy_host);
+        }
+        if (isset($this->_proxy_port) && is_integer($this->_proxy_port)) {
+            curl_setopt($this->curl, CURLOPT_PROXYPORT, $this->_proxy_port);
+        }
+        if (isset($this->_proxy_login) && is_string($this->_proxy_login) && strlen($this->_proxy_login) > 0 &&
+            isset($this->_proxy_password) && is_string($this->_proxy_password) && strlen($this->_proxy_password) > 0) {
+            curl_setopt($this->curl, CURLOPT_PROXYUSERPWD, $this->_proxy_login . ':' . $this->_proxy_password);
+            if (property_exists($this, '_digest')) {
+                curl_setopt($this->curl, CURLOPT_PROXYAUTH, CURLAUTH_ANYSAFE);
+            } else {
+                curl_setopt($this->curl, CURLOPT_PROXYAUTH, CURLAUTH_ANY);
+            }
+        }
     }
 
     /**
