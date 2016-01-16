@@ -14,10 +14,12 @@ class CurlSoapClientTest extends \PHPUnit_Framework_TestCase
     public function soap1_1()
     {
         $obj = new CurlSoapClient(null, array(
-            'location' => 'http://localhost:8000/tests/server.php',
+            'location' => 'http://localhost:8000/tests/server.php?auth=basic',
             'uri' => 'http://test-uri/',
             'compression' => SOAP_COMPRESSION_ACCEPT,
-            'connection_timeout' => 1
+            'connection_timeout' => 1,
+            'login' => 'hoge',
+            'password' => 'fuga'
         ));
 
         $response = $obj->test('abc');
@@ -30,13 +32,16 @@ class CurlSoapClientTest extends \PHPUnit_Framework_TestCase
     public function soap1_2()
     {
         $obj = new CurlSoapClient(null, array(
-            'location' => 'http://localhost:8000/tests/server.php?redirect=1',
+            'location' => 'http://localhost:8000/tests/server.php?redirect=1&auth=digest',
             'uri' => 'http://test-uri/',
             'user_agent' => 'curlsoapclient',
             'soap_version' => SOAP_1_2,
             'compression' => SOAP_COMPRESSION_GZIP,
             'keep_alive' => false,
-            'trace' => true
+            'trace' => true,
+            'login' => 'hoge',
+            'password' => 'fuga',
+            'authentication' => SOAP_AUTHENTICATION_DIGEST
         ));
 
         $response = $obj->__soapCall('test', array(123));

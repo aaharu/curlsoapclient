@@ -30,8 +30,13 @@ public CurlSoapClient::CurlSoapClient ( mixed $wsdl [, array $options ] )
 - user_agent
 - keep_alive
   - `true` as a default
+- login
+- password
 - proxy_host
 - proxy_port
+- proxy_login
+- proxy_password
+- authentication
 
 #### additional options
 
@@ -46,19 +51,9 @@ public CurlSoapClient::CurlSoapClient ( mixed $wsdl [, array $options ] )
 
 - stream_context
   - not necessary with curl
-- login
-  - use `CurlSoapClient::___curlSetOpt` instead
-- password
-  - use `CurlSoapClient::___curlSetOpt` instead
-- proxy_login
-  - use `CurlSoapClient::___curlSetOpt` instead
-- proxy_password
-  - use `CurlSoapClient::___curlSetOpt` instead
 - local_cert
   - use `CurlSoapClient::___curlSetOpt` instead
 - passphrase
-  - use `CurlSoapClient::___curlSetOpt` instead
-- authentication
   - use `CurlSoapClient::___curlSetOpt` instead
 - ssl_method
   - use `CurlSoapClient::___curlSetOpt` instead

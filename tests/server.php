@@ -6,6 +6,22 @@ ini_set('soap.wsdl_cache_enabled', 0);
 
 function_exists('getallheaders') && error_log(var_export(getallheaders(), true));
 
+if (@$_GET['auth'] === 'basic') {
+    if (!isset($_SERVER['PHP_AUTH_USER']) || $_SERVER['PHP_AUTH_USER'] !== 'hoge') {
+        header('WWW-Authenticate: Basic realm="Test Realm"');
+        header('HTTP/1.0 401 Unauthorized');
+        exit();
+    }
+} elseif (@$_GET['auth'] === 'digest') {
+    $realm = 'Restricted area';
+    if (empty($_SERVER['PHP_AUTH_DIGEST'])) {
+        header('HTTP/1.1 401 Unauthorized');
+        header('WWW-Authenticate: Digest realm="'.$realm.'",qop="auth",nonce="'.uniqid().'",opaque="'.md5($realm).'"');
+        exit();
+    }
+    // through digest validation
+}
+
 $redirect = (int) @$_GET['redirect'];
 if ($redirect > 0) {
     --$redirect;
