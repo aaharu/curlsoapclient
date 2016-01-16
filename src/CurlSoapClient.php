@@ -109,6 +109,13 @@ class CurlSoapClient extends SoapClient
         return $response;
     }
 
+    /**
+     * set CURLOPT_HTTPHEADER.
+     *
+     * @param string $action SOAP action
+     * @param int $version SOAP version
+     * @return void
+     */
     private function ___configHeader($action, $version)
     {
         $header = array();
@@ -126,6 +133,11 @@ class CurlSoapClient extends SoapClient
         curl_setopt($this->curl, CURLOPT_HTTPHEADER, $header);
     }
 
+    /**
+     * set CURLOPT_ENCODING.
+     *
+     * @return void
+     */
     private function ___configCompression()
     {
         if (isset($this->compression)) {
@@ -139,6 +151,11 @@ class CurlSoapClient extends SoapClient
         }
     }
 
+    /**
+     * set CURLOPT_CONNECTTIMEOUT and CURLOPT_TIMEOUT.
+     *
+     * @return void
+     */
     private function ___configTimeout()
     {
         $connection_timeout = 10; // default
@@ -149,6 +166,11 @@ class CurlSoapClient extends SoapClient
         curl_setopt($this->curl, CURLOPT_TIMEOUT, $this->curl_timeout);
     }
 
+    /**
+     * set CURLOPT_HTTPAUTH.
+     *
+     * @return void
+     */
     private function ___configHttpAuthentication()
     {
         if (isset($this->_login) && is_string($this->_login) && strlen($this->_login) > 0 &&
@@ -162,6 +184,11 @@ class CurlSoapClient extends SoapClient
         }
     }
 
+    /**
+     * set proxy options.
+     *
+     * @return void
+     */
     private function ___configProxy()
     {
         if (isset($this->_proxy_host) && is_string($this->_proxy_host) && strlen($this->_proxy_host) > 0) {
