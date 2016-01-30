@@ -15,6 +15,8 @@ Documentation
 
 ### Aaharu\Soap\CurlSoapClient::CurlSoapClient
 
+This class is extended [SoapClient](http://php.net/manual/class.soapclient.php).
+
 ```php
 public CurlSoapClient::CurlSoapClient ( mixed $wsdl [, array $options ] )
 ```
@@ -37,6 +39,7 @@ public CurlSoapClient::CurlSoapClient ( mixed $wsdl [, array $options ] )
 - proxy_login
 - proxy_password
 - authentication
+- ssl_method
 
 #### additional options
 
@@ -54,8 +57,6 @@ public CurlSoapClient::CurlSoapClient ( mixed $wsdl [, array $options ] )
 - local_cert
   - use `CurlSoapClient::___curlSetOpt` instead
 - passphrase
-  - use `CurlSoapClient::___curlSetOpt` instead
-- ssl_method
   - use `CurlSoapClient::___curlSetOpt` instead
 
 

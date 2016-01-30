@@ -91,6 +91,19 @@ class CurlSoapClient extends SoapClient
         }
         $this->___configHttpAuthentication();
         $this->___configProxy();
+        if (isset($this->_ssl_method) && is_int($this->_ssl_method)) {
+            switch ($this->_ssl_method) {
+                case SOAP_SSL_METHOD_SSLv2:
+                    curl_setopt($this->curl, CURLOPT_SSLVERSION, CURL_SSLVERSION_SSLv2);
+                    break;
+                case SOAP_SSL_METHOD_SSLv3:
+                    curl_setopt($this->curl, CURLOPT_SSLVERSION, CURL_SSLVERSION_SSLv3);
+                    break;
+                default:
+                    curl_setopt($this->curl, CURLOPT_SSLVERSION, CURL_SSLVERSION_DEFAULT);
+                    break;
+            }
+        }
 
         try {
             $response = $this->___curlCall($location);
