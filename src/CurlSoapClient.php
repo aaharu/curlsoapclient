@@ -10,6 +10,7 @@
 namespace Aaharu\Soap;
 
 use SoapClient;
+use SoapFault;
 
 /**
  * @see https://github.com/php/php-src/tree/master/ext/soap
@@ -86,12 +87,12 @@ class CurlSoapClient extends SoapClient
         $this->___configHeader($action, $version);
         $this->___configCompression();
         $this->___configTimeout();
-        if ($this->___isNotEmptyExtProperty('_user_agent')) {
+        if (!$this->___isEmptyExtProperty('_user_agent')) {
             curl_setopt($this->curl, CURLOPT_USERAGENT, $this->_user_agent);
         }
         $this->___configHttpAuthentication();
         $this->___configProxy();
-        if (isset($this->_ssl_method) && is_int($this->_ssl_method)) {
+        if (!$this->___isEmptyExtProperty('_ssl_method')) {
             switch ($this->_ssl_method) {
                 case SOAP_SSL_METHOD_SSLv2:
                     curl_setopt($this->curl, CURLOPT_SSLVERSION, CURL_SSLVERSION_SSLv2);
@@ -107,9 +108,9 @@ class CurlSoapClient extends SoapClient
 
         try {
             $response = $this->___curlCall($location);
-        } catch (\SoapFault $fault) {
+        } catch (SoapFault $fault) {
             if (isset($this->_exceptions) && empty($this->_exceptions)) {
-                // if exceptions option is false, return \SoapFault object
+                // if exceptions option is false, return SoapFault object
                 return $fault;
             }
             throw $fault;
@@ -127,7 +128,6 @@ class CurlSoapClient extends SoapClient
      *
      * @param string $action SOAP action
      * @param int $version SOAP version
-     * @return void
      */
     private function ___configHeader($action, $version)
     {
@@ -148,31 +148,28 @@ class CurlSoapClient extends SoapClient
 
     /**
      * set CURLOPT_ENCODING.
-     *
-     * @return void
      */
     private function ___configCompression()
     {
-        if (isset($this->compression)) {
-            if ($this->compression & SOAP_COMPRESSION_ACCEPT) {
-                curl_setopt($this->curl, CURLOPT_ENCODING, '');
-            } elseif ($this->compression & SOAP_COMPRESSION_DEFLATE) {
-                curl_setopt($this->curl, CURLOPT_ENCODING, 'deflate');
-            } else {
-                curl_setopt($this->curl, CURLOPT_ENCODING, 'gzip');
-            }
+        if (!isset($this->compression)) {
+            return;
+        }
+        if ($this->compression & SOAP_COMPRESSION_ACCEPT) {
+            curl_setopt($this->curl, CURLOPT_ENCODING, '');
+        } elseif ($this->compression & SOAP_COMPRESSION_DEFLATE) {
+            curl_setopt($this->curl, CURLOPT_ENCODING, 'deflate');
+        } else {
+            curl_setopt($this->curl, CURLOPT_ENCODING, 'gzip');
         }
     }
 
     /**
      * set CURLOPT_CONNECTTIMEOUT and CURLOPT_TIMEOUT.
-     *
-     * @return void
      */
     private function ___configTimeout()
     {
         $connection_timeout = 10; // default
-        if (isset($this->_connection_timeout) && is_int($this->_connection_timeout)) {
+        if (!$this->___isEmptyExtProperty('_connection_timeout')) {
             $connection_timeout = $this->_connection_timeout;
         }
         curl_setopt($this->curl, CURLOPT_CONNECTTIMEOUT, $connection_timeout);
@@ -180,49 +177,49 @@ class CurlSoapClient extends SoapClient
     }
 
     /**
-     * set CURLOPT_HTTPAUTH.
-     *
-     * @return void
+     * set CURLOPT_USERPWD and CURLOPT_HTTPAUTH.
      */
     private function ___configHttpAuthentication()
     {
-        if ($this->___isNotEmptyExtProperty('_login') && $this->___isNotEmptyExtProperty('_password')) {
-            curl_setopt($this->curl, CURLOPT_USERPWD, $this->_login . ':' . $this->_password);
-            if (property_exists($this, '_digest')) {
-                curl_setopt($this->curl, CURLOPT_HTTPAUTH, CURLAUTH_ANYSAFE);
-            } else {
-                curl_setopt($this->curl, CURLOPT_HTTPAUTH, CURLAUTH_ANY);
-            }
+        if ($this->___isEmptyExtProperty('_login') || $this->___isEmptyExtProperty('_password')) {
+            return;
+        }
+        curl_setopt($this->curl, CURLOPT_USERPWD, $this->_login . ':' . $this->_password);
+        if (property_exists($this, '_digest')) {
+            curl_setopt($this->curl, CURLOPT_HTTPAUTH, CURLAUTH_ANYSAFE);
+        } else {
+            curl_setopt($this->curl, CURLOPT_HTTPAUTH, CURLAUTH_ANY);
         }
     }
 
     /**
      * set proxy options.
-     *
-     * @return void
      */
     private function ___configProxy()
     {
-        if ($this->___isNotEmptyExtProperty('_proxy_host')) {
-            curl_setopt($this->curl, CURLOPT_PROXY, $this->_proxy_host);
+        if ($this->___isEmptyExtProperty('_proxy_host')) {
+            return;
         }
-        if (isset($this->_proxy_port) && is_int($this->_proxy_port)) {
+        curl_setopt($this->curl, CURLOPT_PROXY, $this->_proxy_host);
+        if (!$this->___isEmptyExtProperty('_proxy_port')) {
             curl_setopt($this->curl, CURLOPT_PROXYPORT, $this->_proxy_port);
         }
-        if ($this->___isNotEmptyExtProperty('_proxy_login') && $this->___isNotEmptyExtProperty('_proxy_password')) {
-            curl_setopt($this->curl, CURLOPT_PROXYUSERPWD, $this->_proxy_login . ':' . $this->_proxy_password);
-            if (property_exists($this, '_digest')) {
-                curl_setopt($this->curl, CURLOPT_PROXYAUTH, CURLAUTH_ANYSAFE);
-            } else {
-                curl_setopt($this->curl, CURLOPT_PROXYAUTH, CURLAUTH_ANY);
-            }
+
+        if ($this->___isEmptyExtProperty('_proxy_login') || $this->___isEmptyExtProperty('_proxy_password')) {
+            return;
+        }
+        curl_setopt($this->curl, CURLOPT_PROXYUSERPWD, $this->_proxy_login . ':' . $this->_proxy_password);
+        if (property_exists($this, '_digest')) {
+            curl_setopt($this->curl, CURLOPT_PROXYAUTH, CURLAUTH_ANYSAFE);
+        } else {
+            curl_setopt($this->curl, CURLOPT_PROXYAUTH, CURLAUTH_ANY);
         }
     }
 
     /**
      * Request cURL.
      *
-     * @param[in] string $location SOAP address
+     * @param string $location SOAP address
      * @param string $location
      * @throws \SoapFault
      * @return mixed response body
@@ -241,7 +238,7 @@ class CurlSoapClient extends SoapClient
 
         $response = curl_exec($this->curl);
         if ($response === false) {
-            throw new \SoapFault(
+            throw new SoapFault(
                 'HTTP',
                 'Error Fetching http, ' . curl_error($this->curl) . ' (' . curl_errno($this->curl) . ')'
             );
@@ -261,7 +258,7 @@ class CurlSoapClient extends SoapClient
             $tmp = stristr($response_header, 'Location:');
             $line_end = strpos($tmp, "\n"); // "\r" will be trimmed
             if ($line_end === false) {
-                throw new \SoapFault('HTTP', 'Error Redirecting, No Location');
+                throw new SoapFault('HTTP', 'Error Redirecting, No Location');
             }
             $new_location = trim(substr($tmp, 9, $line_end - 9));
             $url = parse_url($new_location);
@@ -269,57 +266,67 @@ class CurlSoapClient extends SoapClient
                 empty($url['scheme']) ||
                 preg_match('/^https?$/i', $url['scheme']) !== 1
             ) {
-                throw new \SoapFault('HTTP', 'Error Redirecting, Invalid Location');
+                throw new SoapFault('HTTP', 'Error Redirecting, Invalid Location');
             }
             if (++$this->redirect_count > $this->redirect_max) {
-                throw new \SoapFault('HTTP', 'Redirection limit reached, aborting');
+                throw new SoapFault('HTTP', 'Redirection limit reached, aborting');
             }
             return $this->___curlCall($new_location);
         }
 
-        if ($http_code >= 400) {
-            $is_error = false;
-            $response_length = strlen($response_body);
-            if ($response_length === 0) {
-                $is_error = true;
-            } elseif ($response_length > 0) {
-                $is_xml = false;
-                $content_type = curl_getinfo($this->curl, CURLINFO_CONTENT_TYPE);
-                if ($content_type !== null) {
-                    $separator_position = strpos($content_type, ';');
-                    if ($separator_position !== false) {
-                        $content_type = substr($content_type, 0, $separator_position);
-                    }
-                    if ($content_type === 'text/xml' || $content_type === 'application/soap+xml') {
-                        $is_xml = true;
-                    }
-                }
-                if (!$is_xml) {
-                    $str = ltrim($response_body);
-                    if (strncmp($str, '<?xml', 5)) {
-                        $is_error = true;
-                    }
-                }
-            }
-
-            if ($is_error) {
-                $string_http_code = (string)$http_code;
-                $code_position = strpos($response_header, $string_http_code);
-                $tmp = substr($response_header, $code_position + strlen($string_http_code));
-                $http_message = trim(strstr($tmp, "\n", true));
-                throw new \SoapFault('HTTP', $http_message);
-            }
+        if ($http_code >= 400 && $this->___isErrorResponse($response_body)) {
+            $string_http_code = (string)$http_code;
+            $code_position = strpos($response_header, $string_http_code);
+            $tmp = substr($response_header, $code_position + strlen($string_http_code));
+            $http_message = trim(strstr($tmp, "\n", true));
+            throw new SoapFault('HTTP', $http_message);
         }
 
         return $response_body;
     }
 
+    /**
+     * check body is XML or not
+     *
+     * @param string $response_body server response body
+     * @return boolean
+     */
+    private function ___isErrorResponse($response_body) {
+        $response_length = strlen($response_body);
+        if ($response_length === 0) {
+            return true;
+        }
+        $content_type = curl_getinfo($this->curl, CURLINFO_CONTENT_TYPE);
+        if (!empty($content_type)) {
+            $tmp = explode(';', $content_type, 2);
+            $content_type = $tmp[0];
+        }
+        if ($content_type === 'text/xml' || $content_type === 'application/soap+xml') {
+            return false;
+        }
+        $str = ltrim($response_body);
+        if (strncmp($str, '<?xml', 5)) {
+            return true;
+        }
+        return false;
+    }
+
 
     /**
-     * @param string $property
+     * SoapClient property util
+     *
+     * @param string $property property name
+     * @return boolean
      */
-    private function ___isNotEmptyExtProperty($property)
+    private function ___isEmptyExtProperty($property)
     {
-        return isset($this->{$property}) && is_string($this->{$property}) && strlen($this->{$property}) > 0;
+        if (!isset($this->{$property})) {
+            return true;
+        }
+        if (is_string($this->{$property})) {
+            return strlen($this->{$property}) === 0;
+        }
+
+        return false;
     }
 }

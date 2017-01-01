@@ -94,6 +94,7 @@ class CurlSoapClientTest extends \PHPUnit_Framework_TestCase
         $obj = new CurlSoapClient(null, array(
             'location' => 'http://localhost:8000/tests/server.php?503=1',
             'uri' => 'http://test-uri/',
+            'ssl_method' => SOAP_SSL_METHOD_TLS,
         ));
         $obj->test('hoge');
     }
@@ -141,7 +142,7 @@ class CurlSoapClientTest extends \PHPUnit_Framework_TestCase
         $obj = new CurlSoapClient(null, array(
             'location' => 'http://localhost:8000/tests/server.php?usleep=1300000',
             'uri' => 'http://test-uri/',
-            'curl_timeout' => 1
+            'curl_timeout' => 1,
         ));
         $class = new \stdClass();
         $obj->test($class);
@@ -171,6 +172,19 @@ class CurlSoapClientTest extends \PHPUnit_Framework_TestCase
     {
         $obj = new CurlSoapClient(null, array(
             'location' => 'http://localhost:8000/tests/server.php?location=/tmp',
+            'uri' => 'http://test-uri/',
+        ));
+        $obj->test(true);
+    }
+
+    /**
+     * @test
+     * @expectedException        \SoapFault
+     */
+    public function plainxml()
+    {
+        $obj = new CurlSoapClient(null, array(
+            'location' => 'http://localhost:8000/tests/server.php?plainxml',
             'uri' => 'http://test-uri/',
         ));
         $obj->test(true);
@@ -221,6 +235,8 @@ class CurlSoapClientTest extends \PHPUnit_Framework_TestCase
         $obj = new CurlSoapClient(null, array(
             'location' => 'http://localhost:8000/tests/server.php?400=1',
             'uri' => 'http://test-uri/',
+            'proxy_host' => 'localhost',
+            'proxy_port' => 8000,
             'proxy_login' => 'hoge',
             'proxy_password' => 'fuga',
         ));
