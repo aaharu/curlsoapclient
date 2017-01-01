@@ -13,6 +13,9 @@
     <blacklist>
       <directory suffix=".php">vendor/</directory>
     </blacklist>
+    <whitelist>
+      <directory suffix=".php">src/</directory>
+    </whitelist>
   </filter>
   <php>
     <ini name="date.timezone" value="Asia/Tokyo"/>
