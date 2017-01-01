@@ -72,7 +72,7 @@ class CurlSoapClient extends SoapClient
      * @param int $one_way
      * @throws \Exception
      * @throws \SoapFault
-     * @return mixed (string) SOAP response / (object) SoapFault object
+     * @return string|object (string) SOAP response / (object) SoapFault object
      */
     public function __doRequest($request, $location, $action, $version, $one_way = 0)
     {
@@ -86,7 +86,7 @@ class CurlSoapClient extends SoapClient
         $this->___configHeader($action, $version);
         $this->___configCompression();
         $this->___configTimeout();
-        if (isset($this->_user_agent) && is_string($this->_user_agent) && strlen($this->_user_agent) > 0) {
+        if ($this->___isNotEmptyExtProperty('_user_agent')) {
             curl_setopt($this->curl, CURLOPT_USERAGENT, $this->_user_agent);
         }
         $this->___configHttpAuthentication();
@@ -186,8 +186,7 @@ class CurlSoapClient extends SoapClient
      */
     private function ___configHttpAuthentication()
     {
-        if (isset($this->_login) && is_string($this->_login) && strlen($this->_login) > 0 &&
-            isset($this->_password) && is_string($this->_password) && strlen($this->_password) > 0) {
+        if ($this->___isNotEmptyExtProperty('_login') && $this->___isNotEmptyExtProperty('_password')) {
             curl_setopt($this->curl, CURLOPT_USERPWD, $this->_login . ':' . $this->_password);
             if (property_exists($this, '_digest')) {
                 curl_setopt($this->curl, CURLOPT_HTTPAUTH, CURLAUTH_ANYSAFE);
@@ -204,14 +203,13 @@ class CurlSoapClient extends SoapClient
      */
     private function ___configProxy()
     {
-        if (isset($this->_proxy_host) && is_string($this->_proxy_host) && strlen($this->_proxy_host) > 0) {
+        if ($this->___isNotEmptyExtProperty('_proxy_host')) {
             curl_setopt($this->curl, CURLOPT_PROXY, $this->_proxy_host);
         }
-        if (isset($this->_proxy_port) && is_integer($this->_proxy_port)) {
+        if (isset($this->_proxy_port) && is_int($this->_proxy_port)) {
             curl_setopt($this->curl, CURLOPT_PROXYPORT, $this->_proxy_port);
         }
-        if (isset($this->_proxy_login) && is_string($this->_proxy_login) && strlen($this->_proxy_login) > 0 &&
-            isset($this->_proxy_password) && is_string($this->_proxy_password) && strlen($this->_proxy_password) > 0) {
+        if ($this->___isNotEmptyExtProperty('_proxy_login') && $this->___isNotEmptyExtProperty('_proxy_password')) {
             curl_setopt($this->curl, CURLOPT_PROXYUSERPWD, $this->_proxy_login . ':' . $this->_proxy_password);
             if (property_exists($this, '_digest')) {
                 curl_setopt($this->curl, CURLOPT_PROXYAUTH, CURLAUTH_ANYSAFE);
@@ -314,5 +312,11 @@ class CurlSoapClient extends SoapClient
         }
 
         return $response_body;
+    }
+
+
+    private function ___isNotEmptyExtProperty($property)
+    {
+        return isset($this->{$property}) && is_string($this->{$property}) && strlen($this->{$property}) > 0;
     }
 }
