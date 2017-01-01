@@ -46,6 +46,14 @@ if (isset($_GET['300'])) {
     exit();
 }
 
+if (isset($_GET['plainxml'])) {
+    header('HTTP/1.1 500');
+    header('Content-Type: text/plain');
+    echo '<?xml version="1.0" encoding="UTF-8"?>
+<root></root>';
+    exit();
+}
+
 $location = @$_GET['location'];
 if ($location) {
     header("Location: $location");
