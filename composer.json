@@ -1,7 +1,7 @@
 {
     "name": "aaharu/curlsoapclient",
     "type": "library",
-    "description": "SoapClient with ext-curl",
+    "description": "A SoapClient wrapper that uses ext-curl.",
     "keywords": ["soap", "soap-client", "curl", "client", "web service"],
     "license": "MIT",
     "authors": [
