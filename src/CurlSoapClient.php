@@ -315,6 +315,9 @@ class CurlSoapClient extends SoapClient
     }
 
 
+    /**
+     * @param string $property
+     */
     private function ___isNotEmptyExtProperty($property)
     {
         return isset($this->{$property}) && is_string($this->{$property}) && strlen($this->{$property}) > 0;
