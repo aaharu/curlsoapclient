@@ -1,6 +1,7 @@
 # Change Log
 
-## [1.1.1] - 2017-01-02
+
+## [1.1.2] - 2017-01-02
 ### Fixed
 - fix proxy\_port, proxy\_login, proxy\_password options.
 
@@ -12,11 +13,18 @@
 ### Added
 - use editorconfig.
 
+
+## [1.1.1] - 2016-01-30
+### Added
+- support ssl\_method option.
+
+
 ## [1.1.0] - 2016-01-16
 ### Fixed
-- fix CurlSoapClient::__getCookies and CurlSoapClient::__setCookie.
+- fix CurlSoapClient::\_\_getCookies and CurlSoapClient::\_\_setCookie.
 
 ### Added
 - support proxy\_host, proxy\_port, proxy\_login, proxy\_password, login, password and authentication options.
+
 
 ## [1.0.0] - 2014-09-25
