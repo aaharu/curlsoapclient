@@ -1,7 +1,0 @@
-v1.1.0:
-  date: 2016-01-16
-    changes:
-        - fix CurlSoapClient::__getCookies and CurlSoapClient::__setCookie.
-        - support proxy_host, proxy_port, proxy_login, proxy_password, login, password and authentication options.
-v1.0.0:
-  date: 2014-09-25
