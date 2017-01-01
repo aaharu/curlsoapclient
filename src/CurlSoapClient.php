@@ -225,6 +225,7 @@ class CurlSoapClient extends SoapClient
      * Request cURL.
      *
      * @param[in] string $location SOAP address
+     * @param string $location
      * @throws \SoapFault
      * @return mixed response body
      */
