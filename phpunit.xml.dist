@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<phpunit xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" colors="true" bootstrap="tests/bootstrap.php" strict="true">
+<phpunit colors="true" bootstrap="tests/bootstrap.php">
     <logging>
         <log type="coverage-clover" target="report/coverage.clover"/>
         <log type="coverage-html" target="report/coverage" charset="UTF-8" highlight="true"/>
     </logging>
     <testsuites>
-        <testsuite name="unit-tests">
+        <testsuite name="builtin-server-tests">
             <directory>tests/</directory>
         </testsuite>
     </testsuites>
@@ -13,12 +13,10 @@
         <blacklist>
             <directory suffix=".php">vendor/</directory>
         </blacklist>
-        <whitelist>
-            <directory suffix="Test.php">src/</directory>
-        </whitelist>
     </filter>
     <php>
         <ini name="date.timezone" value="Asia/Tokyo"/>
         <ini name="soap.wsdl_cache_enabled" value="0"/>
+        <ini name="error_reporting" value="-1"/>
     </php>
 </phpunit>

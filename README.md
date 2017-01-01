@@ -109,13 +109,15 @@ Contributing
 With [composer](https://getcomposer.org) installed, run the following from the root of the repository:
 
 ```sh
-$ composer install
+composer install
 ```
 
 ### Running the tests
 
 ```sh
-$ composer test
+## running built-in server before execute `composer test`
+# php -dalways_populate_raw_post_data=-1 -ddisplay_errors=stderr -S localhost:8000 &
+composer test
 ```
 
 
