@@ -1,5 +1,6 @@
 vendor/
 report/
+artifacts/
 composer.phar
 composer.lock
 

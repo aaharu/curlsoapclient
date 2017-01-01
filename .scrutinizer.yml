@@ -4,6 +4,12 @@ build:
       version: '7.0'
       ini:
         'date.timezone': 'Asia/Tokyo'
+  tests:
+    override:
+      - command: composer test
+        coverage:
+          file: report/coverage.clover
+          format: php-clover
   project_setup:
     before:
       - command: php -dalways_populate_raw_post_data=-1 -ddisplay_errors=stderr -S localhost:8000
