@@ -1,14 +1,24 @@
-imports:
-    - php
+build:
+  environment:
+    php:
+      version: '7.0'
+      ini:
+        'date.timezone': 'Asia/Tokyo'
+  project_setup:
+    before:
+      - command: php -dalways_populate_raw_post_data=-1 -ddisplay_errors=stderr -S localhost:8000
+        background: true
 
 filter:
-    excluded_paths:
-        - tests/*
+  excluded_paths:
+    - tests/*
 
 tools:
-    external_code_coverage: true
+  php_sim: true
+  php_pdepend: true
+  php_analyzer: true
 
 checks:
-    php:
-        code_rating: true
-        duplication: true
+  php:
+    verify_property_names: false
+    verify_access_scope_valid: false
