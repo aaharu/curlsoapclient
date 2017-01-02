@@ -21,6 +21,7 @@ class CurlSoapClient extends SoapClient
     protected $redirect_max; ///< max redirect counts
     protected $curl_timeout; ///< cURL request time-out seconds
     private $redirect_count = 0;
+    private $proxy_type = null;
 
     public function __construct($wsdl, array $options)
     {
@@ -32,6 +33,9 @@ class CurlSoapClient extends SoapClient
         $this->curl_timeout = 30;
         if (isset($options['curl_timeout'])) {
             $this->curl_timeout = (int)$options['curl_timeout'];
+        }
+        if (isset($options['proxy_type']) && in_array($options['proxy_type'], array('http', 'socks4', 'socks5'))) {
+            $this->proxy_type = $options['proxy_type'];
         }
         $this->curl = curl_init();
         $this->_cookies = array();
@@ -213,6 +217,14 @@ class CurlSoapClient extends SoapClient
             curl_setopt($this->curl, CURLOPT_PROXYAUTH, CURLAUTH_ANYSAFE);
         } else {
             curl_setopt($this->curl, CURLOPT_PROXYAUTH, CURLAUTH_ANY);
+        }
+        if ($this->proxy_type == 'socks5') {
+            curl_setopt($this->curl, CURLOPT_PROXYTYPE, CURLPROXY_SOCKS5);
+        } elseif ($this->proxy_type == 'socks4') {
+            curl_setopt($this->curl, CURLOPT_PROXYTYPE, CURLPROXY_SOCKS4);
+        } elseif ($this->proxy_type == 'http') {
+            // @see http://stackoverflow.com/questions/12288956/what-is-the-curl-option-curlopt-httpproxytunnel-means
+            curl_setopt($this->curl, CURLOPT_HTTPPROXYTUNNEL, true);
         }
     }
 
