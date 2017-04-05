@@ -209,8 +209,8 @@ class CurlSoapClient extends SoapClient
             curl_setopt($this->curl, CURLOPT_PROXYPORT, $this->_proxy_port);
         }
 
-        if ($this->___isEmptyExtProperty('_proxy_login') || $this->___isEmptyExtProperty('_proxy_password')) {
-            return;
+        if (!$this->___isEmptyExtProperty('_proxy_login') && !$this->___isEmptyExtProperty('_proxy_password')) {
+            curl_setopt($this->curl, CURLOPT_PROXYUSERPWD, $this->_proxy_login . ':' . $this->_proxy_password);
         }
         curl_setopt($this->curl, CURLOPT_PROXYUSERPWD, $this->_proxy_login . ':' . $this->_proxy_password);
         if (property_exists($this, '_digest')) {
