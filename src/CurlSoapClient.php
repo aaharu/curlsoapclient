@@ -20,8 +20,8 @@ class CurlSoapClient extends SoapClient
     protected $curl = null; ///< cURL handle
     protected $redirect_max; ///< max redirect counts
     protected $curl_timeout; ///< cURL request time-out seconds
+    protected $proxy_type = CURLPROXY_HTTP; ///< proxy_type such as http, socks4, socks5
     private $redirect_count = 0;
-    private $proxy_type = null;
 
     public function __construct($wsdl, array $options)
     {
@@ -34,7 +34,8 @@ class CurlSoapClient extends SoapClient
         if (isset($options['curl_timeout'])) {
             $this->curl_timeout = (int)$options['curl_timeout'];
         }
-        if (isset($options['proxy_type']) && in_array($options['proxy_type'], array('http', 'socks4', 'socks5'))) {
+        if (isset($options['proxy_type']) &&
+            in_array($options['proxy_type'], array('http', 'socks4', 'socks5'), true)) {
             $this->proxy_type = $options['proxy_type'];
         }
         $this->curl = curl_init();
@@ -208,21 +209,19 @@ class CurlSoapClient extends SoapClient
         if (!$this->___isEmptyExtProperty('_proxy_port')) {
             curl_setopt($this->curl, CURLOPT_PROXYPORT, $this->_proxy_port);
         }
-
         if (!$this->___isEmptyExtProperty('_proxy_login') && !$this->___isEmptyExtProperty('_proxy_password')) {
             curl_setopt($this->curl, CURLOPT_PROXYUSERPWD, $this->_proxy_login . ':' . $this->_proxy_password);
         }
-        curl_setopt($this->curl, CURLOPT_PROXYUSERPWD, $this->_proxy_login . ':' . $this->_proxy_password);
         if (property_exists($this, '_digest')) {
             curl_setopt($this->curl, CURLOPT_PROXYAUTH, CURLAUTH_ANYSAFE);
         } else {
             curl_setopt($this->curl, CURLOPT_PROXYAUTH, CURLAUTH_ANY);
         }
-        if ($this->proxy_type == 'socks5') {
+        if ($this->proxy_type === 'socks5') {
             curl_setopt($this->curl, CURLOPT_PROXYTYPE, CURLPROXY_SOCKS5);
-        } elseif ($this->proxy_type == 'socks4') {
+        } elseif ($this->proxy_type === 'socks4') {
             curl_setopt($this->curl, CURLOPT_PROXYTYPE, CURLPROXY_SOCKS4);
-        } elseif ($this->proxy_type == 'http') {
+        } elseif ($this->proxy_type === 'http') {
             // @see http://stackoverflow.com/questions/12288956/what-is-the-curl-option-curlopt-httpproxytunnel-means
             curl_setopt($this->curl, CURLOPT_HTTPPROXYTUNNEL, true);
         }

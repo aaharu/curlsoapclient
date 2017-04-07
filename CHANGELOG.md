@@ -4,6 +4,7 @@
 ### Added
 - add .gitattributes
 - add compare view's link in changelog
+- proxy\_type option.
 
 
 ## [1.1.2] - 2017-01-02
@@ -32,7 +33,7 @@
 - support proxy\_host, proxy\_port, proxy\_login, proxy\_password, login, password and authentication options.
 
 
-## [1.0.0] - 2014-09-25
+## 1.0.0 - 2014-09-25
 
 
 [Unreleased]: https://github.com/aaharu/curlsoapclient/compare/1.1.2...HEAD

@@ -49,6 +49,8 @@ public CurlSoapClient::CurlSoapClient ( mixed $wsdl [, array $options ] )
 - curl\_timeout
   - CURLOPT\_TIMEOUT
   - `30` as a default
+- proxy\_type
+  - http, socks4, socks5
 
 #### unsupported options
 
