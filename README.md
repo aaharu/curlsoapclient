@@ -13,7 +13,7 @@ https://packagist.org/packages/aaharu/curlsoapclient
 Documentation
 --------------
 
-### Aaharu\Soap\CurlSoapClient::CurlSoapClient
+### Aaharu\\Soap\\CurlSoapClient::CurlSoapClient
 
 This class is extended [SoapClient](http://php.net/manual/class.soapclient.php).
 
