@@ -125,5 +125,4 @@ composer test
 
 Licensed under the MIT License.
 
-## License
 [![FOSSA Status](https://app.fossa.io/api/projects/git%2Bgithub.com%2Faaharu%2Fcurlsoapclient.svg?type=large)](https://app.fossa.io/projects/git%2Bgithub.com%2Faaharu%2Fcurlsoapclient?ref=badge_large)
