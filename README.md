@@ -1,5 +1,4 @@
-curlsoapclient
-==============
+# curlsoapclient
 
 [![Build Status](https://travis-ci.org/aaharu/curlsoapclient.png?branch=master)](https://travis-ci.org/aaharu/curlsoapclient)
 [![Scrutinizer Code Quality](https://scrutinizer-ci.com/g/aaharu/curlsoapclient/badges/quality-score.png?b=master)](https://scrutinizer-ci.com/g/aaharu/curlsoapclient/?branch=master)
@@ -11,8 +10,7 @@ A SoapClient wrapper that uses ext-curl.
 https://packagist.org/packages/aaharu/curlsoapclient
 
 
-Documentation
---------------
+## Documentation
 
 ### Aaharu\\Soap\\CurlSoapClient::CurlSoapClient
 
@@ -106,8 +104,7 @@ $client->doSomething();
 ```
 
 
-Contributing
---------------
+## Contributing
 
 With [composer](https://getcomposer.org) installed, run the following from the root of the repository:
 
@@ -124,11 +121,9 @@ composer test
 ```
 
 
-License
---------------
+## License
 
 Licensed under the MIT License.
-
 
 ## License
 [![FOSSA Status](https://app.fossa.io/api/projects/git%2Bgithub.com%2Faaharu%2Fcurlsoapclient.svg?type=large)](https://app.fossa.io/projects/git%2Bgithub.com%2Faaharu%2Fcurlsoapclient?ref=badge_large)
