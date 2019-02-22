@@ -75,7 +75,7 @@ function testFault()
     throw new SoapFault('test', 'message');
 }
 
-$server = new \SoapServer(null, array('uri' => 'http://test-uri/'));
+$server = new \SoapServer(null, ['uri' => 'http://test-uri/']);
 $server->addFunction('test');
 $server->addFunction('testFault');
 $server->handle();

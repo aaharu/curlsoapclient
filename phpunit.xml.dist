@@ -2,7 +2,7 @@
 <phpunit colors="true" bootstrap="tests/bootstrap.php">
   <logging>
     <log type="coverage-clover" target="report/coverage.clover"/>
-    <log type="coverage-html" target="report/coverage" charset="UTF-8" highlight="true"/>
+    <log type="coverage-html" target="report/coverage"/>
   </logging>
   <testsuites>
     <testsuite name="builtin-server-tests">
@@ -10,9 +10,6 @@
     </testsuite>
   </testsuites>
   <filter>
-    <blacklist>
-      <directory suffix=".php">vendor/</directory>
-    </blacklist>
     <whitelist>
       <directory suffix=".php">src/</directory>
     </whitelist>

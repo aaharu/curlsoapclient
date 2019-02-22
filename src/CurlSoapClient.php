@@ -35,11 +35,11 @@ class CurlSoapClient extends SoapClient
             $this->curl_timeout = (int)$options['curl_timeout'];
         }
         if (isset($options['proxy_type']) &&
-            in_array($options['proxy_type'], array('http', 'socks4', 'socks5'), true)) {
+            in_array($options['proxy_type'], ['http', 'socks4', 'socks5'], true)) {
             $this->proxy_type = $options['proxy_type'];
         }
         $this->curl = curl_init();
-        $this->_cookies = array();
+        $this->_cookies = [];
     }
 
     public function __destruct()
@@ -136,7 +136,7 @@ class CurlSoapClient extends SoapClient
      */
     private function ___configHeader($action, $version)
     {
-        $header = array();
+        $header = [];
         if (isset($this->_keep_alive) && empty($this->_keep_alive)) {
             $header[] = 'Connection: close';
         } else {
@@ -240,7 +240,7 @@ class CurlSoapClient extends SoapClient
         curl_setopt($this->curl, CURLOPT_URL, $location);
 
         if (!empty($this->_cookies)) {
-            $cookies = array();
+            $cookies = [];
             foreach ($this->_cookies as $cookie_name => $cookie_value) {
                 $cookies[] = $cookie_name . '=' . $cookie_value[0];
             }
@@ -302,7 +302,8 @@ class CurlSoapClient extends SoapClient
      * @param string $response_body server response body
      * @return boolean
      */
-    private function ___isErrorResponse($response_body) {
+    private function ___isErrorResponse($response_body)
+    {
         $response_length = strlen($response_body);
         if ($response_length === 0) {
             return true;
