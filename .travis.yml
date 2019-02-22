@@ -1,12 +1,11 @@
 language: php
 php:
-  - '7.1'
-  - '7.0'
-  - '5.6'
+  - '7.3'
+  - '7.2'
 
 before_install:
   - 'find src -type f -name *.php | xargs php -nl'
-  - '[[ "$TRAVIS_PHP_VERSION" == "5.3" ]] || php -dalways_populate_raw_post_data=-1 -ddisplay_errors=stderr -S localhost:8000 > /tmp/server.log 2>&1 &'
+  - 'php -ddisplay_errors=stderr -S localhost:8000 > /tmp/server.log 2>&1 &'
 
 install:
   - composer install

@@ -9,12 +9,11 @@ A SoapClient wrapper that uses ext-curl.
 
 https://packagist.org/packages/aaharu/curlsoapclient
 
-
 ## Documentation
 
 ### Aaharu\\Soap\\CurlSoapClient::CurlSoapClient
 
-This class is extended [SoapClient](http://php.net/manual/class.soapclient.php).
+This class is extended [SoapClient](https://secure.php.net/manual/class.soapclient.php).
 
 ```php
 public CurlSoapClient::CurlSoapClient ( mixed $wsdl [, array $options ] )
@@ -68,7 +67,7 @@ wsdl mode.
 use Aaharu\Soap\CurlSoapClient;
 
 try {
-    $client = new CurlSoapClient('http://webservices.amazon.com/AWSECommerceService/2013-08-01/AWSECommerceService.wsdl', array('trace' => true));
+    $client = new CurlSoapClient('http://webservices.amazon.com/AWSECommerceService/2013-08-01/AWSECommerceService.wsdl', ['trace' => true]);
     $client->ItemLookup();
 } catch (\SoapFault $fault) {
 }
@@ -94,15 +93,23 @@ non-wsdl mode.
 ```php
 use Aaharu\Soap\CurlSoapClient;
 
-$client = new CurlSoapClient(null, array(
+$client = new CurlSoapClient(null, [
     'location' => 'http://example.com/test/location',
     'uri' => 'http://example.com/test/uri',
     'redirect_max' => 1,
     'exceptions' => false,
-));
+]);
 $client->doSomething();
 ```
 
+## Installation
+
+```sh
+composer require aaharu/curlsoapclient
+
+## for old PHP
+# composer require aaharu/curlsoapclient:1.2.0
+```
 
 ## Contributing
 
@@ -116,10 +123,9 @@ composer install
 
 ```sh
 ## running built-in server before execute `composer test`
-# php -dalways_populate_raw_post_data=-1 -ddisplay_errors=stderr -S localhost:8000 &
+# php -ddisplay_errors=stderr -S localhost:8000 &
 composer test
 ```
-
 
 ## License
 

@@ -1,7 +1,7 @@
 build:
   environment:
     php:
-      version: '7.1'
+      version: '7.3'
       ini:
         'date.timezone': 'Asia/Tokyo'
   tests:
@@ -12,7 +12,7 @@ build:
           format: php-clover
   project_setup:
     before:
-      - command: php -dalways_populate_raw_post_data=-1 -ddisplay_errors=stderr -S localhost:8000
+      - command: php -ddisplay_errors=stderr -S localhost:8000
         background: true
 
 filter:
