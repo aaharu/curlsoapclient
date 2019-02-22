@@ -2,6 +2,10 @@
 
 ## [2.0.0] - 2019-02-23
 
+### Changed
+
+- drop php version less than 7.2
+
 ## [1.2.0] - 2017-04-07
 
 ### Added
