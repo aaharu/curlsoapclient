@@ -1,6 +1,6 @@
 # curlsoapclient
 
-[![Build Status](https://travis-ci.org/aaharu/curlsoapclient.png?branch=master)](https://travis-ci.org/aaharu/curlsoapclient)
+[![Build Status](https://travis-ci.com/aaharu/curlsoapclient.svg?branch=master)](https://travis-ci.com/aaharu/curlsoapclient)
 [![Scrutinizer Code Quality](https://scrutinizer-ci.com/g/aaharu/curlsoapclient/badges/quality-score.png?b=master)](https://scrutinizer-ci.com/g/aaharu/curlsoapclient/?branch=master)
 [![Code Coverage](https://scrutinizer-ci.com/g/aaharu/curlsoapclient/badges/coverage.png?b=master)](https://scrutinizer-ci.com/g/aaharu/curlsoapclient/?branch=master)
 [![FOSSA Status](https://app.fossa.io/api/projects/git%2Bgithub.com%2Faaharu%2Fcurlsoapclient.svg?type=shield)](https://app.fossa.io/projects/git%2Bgithub.com%2Faaharu%2Fcurlsoapclient?ref=badge_shield)
